@@ -1,0 +1,184 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindBloom Therapy | A Space to Grow</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .heading-font { font-family: 'Quicksand', sans-serif; }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+        .floating { animation: float 5s ease-in-out infinite; }
+        .floating-delay { animation: float 6s ease-in-out infinite; animation-delay: 1s; }
+    </style>
+</head>
+
+<body class="bg-gradient-to-b from-teal-50 via-white to-white text-slate-700">
+
+{% include 'partials/navbar.html' %}
+{% include 'partials/messages.html' %}
+
+<!-- HERO -->
+<section class="relative overflow-hidden">
+
+    <!-- soft decorative blobs -->
+    <div class="absolute -top-24 -right-24 w-96 h-96 bg-teal-200/40 rounded-full blur-3xl"></div>
+    <div class="absolute top-40 -left-24 w-80 h-80 bg-orange-200/40 rounded-full blur-3xl"></div>
+
+    <div class="max-w-7xl mx-auto px-6 sm:px-8 py-14 md:py-20 relative">
+
+        <div class="grid lg:grid-cols-2 gap-12 items-center lg:min-h-[65vh]">
+
+            <!-- LEFT SIDE -->
+            <div>
+                <p class="uppercase tracking-[4px] text-teal-600 mb-4 text-xs sm:text-sm font-semibold">
+                    Compassionate. Confidential. Human.
+                </p>
+
+                <h1 class="heading-font text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-800 leading-tight">
+                    A calmer mind
+                    <span class="text-teal-500">starts here.</span>
+                </h1>
+
+                <p class="text-slate-500 text-lg sm:text-xl max-w-xl mt-6">
+                    Licensed therapists offering individual, couples, family, and
+                    group sessions — in person or from wherever feels safest.
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-4 mt-10">
+                  
+
+                    <a href="{% url 'catalog' %}"
+                       class="border-2 border-teal-200 text-teal-600 text-center px-8 py-4 rounded-2xl font-semibold hover:bg-teal-50 transition">
+                        Explore Services
+                    </a>
+                </div>
+            </div>
+
+            <!-- RIGHT SIDE ILLUSTRATION -->
+            <div class="relative flex items-center justify-center">
+                <svg viewBox="0 0 400 400" class="w-full max-w-md floating" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="200" cy="200" r="170" fill="#CCFBF1"/>
+                    <circle cx="120" cy="130" r="30" fill="#FDE68A" class="floating-delay"/>
+                    <circle cx="300" cy="290" r="22" fill="#FBCFE8"/>
+                    <path d="M140 220c0-40 27-68 60-68s55 27 55 55c0 16-8 27-16 35-6 5-8 11-8 19v11H164v-12c0-7-3-11-7-15-11-11-17-15-17-25z"
+                          fill="none" stroke="#0D9488" stroke-width="6" stroke-linejoin="round"/>
+                    <path d="M164 272v18a10 10 0 0 0 10 10h32a10 10 0 0 0 10-10v-18" fill="none" stroke="#0D9488" stroke-width="6" stroke-linejoin="round"/>
+                    <path d="M170 195c8-10 22-12 30-4" stroke="#0D9488" stroke-width="4" stroke-linecap="round" fill="none"/>
+                    <circle cx="90" cy="300" r="8" fill="#5EEAD4"/>
+                    <circle cx="320" cy="120" r="10" fill="#FCA5A5"/>
+                </svg>
+            </div>
+
+        </div>
+
+        <div class="text-center mt-20 md:mt-24 mb-12 md:mb-16">
+            <p class="uppercase tracking-[6px] text-teal-500 text-sm font-semibold">
+                Popular Sessions
+            </p>
+        </div>
+
+        <!-- SERVICES -->
+        <section class="pb-16 md:pb-24">
+            {% if services %}
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                {% for service in services %}
+                <a href="{% url 'book' service.id %}"
+                   class="service-card bg-white rounded-3xl overflow-hidden border border-teal-100 hover:border-teal-300 hover:shadow-xl hover:-translate-y-1 transition block p-6">
+
+                    <div class="w-16 h-16 mb-5">
+                        {% include 'partials/service_icon.html' with icon=service.icon %}
+                    </div>
+
+                    <h3 class="heading-font text-xl font-bold text-slate-800">
+                        {{ service.name }}
+                    </h3>
+                    <p class="text-teal-600 mt-2 font-semibold">
+                        ₦{{ service.price|floatformat:0 }} · {{ service.duration }} min
+                    </p>
+                </a>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-center text-slate-400">Services are being added soon — check back shortly.</p>
+            {% endif %}
+        </section>
+
+    </div>
+</section>
+<!-- Mindbloom Therapy Footer -->
+<!-- Mindbloom Therapy Footer (White & Teal/Blue-Green) -->
+<footer style="background-color: #ffffff; color: #334155; padding: 50px 20px 20px 20px; border-top: 3px solid #0d9488; font-family: sans-serif; margin-top: 60px;">
+  <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 35px;">
+    
+    <!-- Brand & Mission -->
+    <div style="flex: 1.5; min-width: 280px;">
+      <h3 style="color: #0f766e; font-size: 1.5rem; margin-top: 0; margin-bottom: 12px; letter-spacing: 0.5px; font-weight: bold;">
+        Mindbloom Therapy
+      </h3>
+      <p style="color: #475569; font-size: 0.95rem; line-height: 1.6; margin-bottom: 15px;">
+        Nurturing growth, healing, and personal resilience through compassionate, evidence-based therapy and mental wellness care.
+      </p>
+      <p style="color: #0d9488; font-size: 0.9rem; font-style: italic; margin: 0; font-weight: 500;">
+        "Helping your mind bloom into balance."
+      </p>
+    </div>
+
+    <!-- Quick Navigation -->
+    <div style="flex: 1; min-width: 180px;">
+      
+     
+    <!-- Contact & Hours -->
+    <div style="flex: 1.2; min-width: 240px;">
+      <h4 style="color: #0f766e; font-size: 1.1rem; margin-top: 0; margin-bottom: 15px; border-bottom: 2px solid #0d9488; padding-bottom: 6px; display: inline-block;">
+        Contact & Office
+      </h4>
+      <p style="margin: 6px 0; font-size: 0.95rem; color: #475569;">
+        <strong style="color: #0f766e;">Address:</strong>Federal University of Technology, Owerri.
+      </p>
+      <p style="margin: 6px 0; font-size: 0.95rem; color: #475569;">
+        <strong style="color: #0f766e;">Phone:</strong> 
+        <a href="tel:+1234567890" style="color: #0d9488; text-decoration: none; font-weight: 500;">08107337549</a>
+      </p>
+      <p style="margin: 6px 0; font-size: 0.95rem; color: #475569;">
+        <strong style="color: #0f766e;">Email:</strong> 
+        <a href="mailto:hello@mindbloomtherapy.com" style="color: #0d9488; text-decoration: none; font-weight: 500;">mindbloomtherapy@gmail.com</a>
+      </p>
+      <p style="margin: 6px 0; font-size: 0.95rem; color: #475569;">
+        <strong style="color: #0f766e;">Hours:</strong> Mon – Sat: 10:00 AM – 4:00 PM
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Crisis / Safety Disclaimer Notice -->
+  <div style="max-width: 1200px; margin: 30px auto 0 auto; padding: 15px 20px; background-color: #f0fdfa; border-left: 4px solid #0d9488; border-radius: 6px; font-size: 0.85rem; color: #134e4a;">
+    <strong style="color: #0f766e;">Emergency Notice:</strong> If you or someone you know is experiencing a mental health crisis or immediate danger, please call emergency services or contact your local crisis hotline immediately.
+  </div>
+
+  <!-- Divider -->
+  <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 25px 0 15px 0;">
+
+  <!-- Copyright & Legal -->
+  <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; color: #64748b; font-size: 0.85rem; gap: 10px;">
+    <p style="margin: 0;">&copy; 2026 <span style="color: #0f766e; font-weight: bold;">Mindbloom Therapy</span>. All rights reserved.</p>
+    <div>
+      <a href="/privacy/" style="color: #64748b; text-decoration: none; margin-right: 15px;">Privacy Policy</a>
+      <a href="/terms/" style="color: #64748b; text-decoration: none;">Terms of Service</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

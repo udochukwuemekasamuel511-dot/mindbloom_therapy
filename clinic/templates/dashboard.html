@@ -1,0 +1,191 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Sessions | MindBloom Therapy</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+          rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .heading-font { font-family: 'Quicksand', sans-serif; }
+    </style>
+</head>
+
+<body class="bg-white text-slate-700 min-h-screen">
+
+{% include 'partials/navbar.html' %}
+{% include 'partials/messages.html' %}
+
+<main class="max-w-7xl mx-auto px-6 md:px-10 py-10 md:py-14">
+
+    <!-- WELCOME -->
+    <section class="mb-10 md:mb-12">
+        <p class="uppercase tracking-[4px] text-teal-500 text-sm mb-3 font-semibold">
+            Client Account
+        </p>
+
+        <h1 class="heading-font text-3xl sm:text-4xl md:text-5xl font-bold text-slate-800">
+            Welcome back,
+            <span class="text-teal-500">{{ user.username }}</span>
+        </h1>
+
+        <p class="text-slate-500 mt-4 max-w-2xl">
+            Here you can view and manage your upcoming and past sessions.
+        </p>
+    </section>
+
+    <!-- ACCOUNT SUMMARY -->
+    <section class="grid sm:grid-cols-3 gap-6 mb-12 md:mb-14">
+
+        <div class="bg-teal-50 border border-teal-100 rounded-3xl p-6 sm:p-7">
+            <p class="text-slate-400 text-sm">Client</p>
+            <h2 class="text-2xl font-semibold mt-2 truncate text-slate-800">{{ user.username }}</h2>
+        </div>
+
+        <div class="bg-orange-50 border border-orange-100 rounded-3xl p-6 sm:p-7">
+            <p class="text-slate-400 text-sm">Total Sessions</p>
+            <h2 class="text-4xl font-semibold text-orange-500 mt-2">{{ bookings|length }}</h2>
+        </div>
+
+        <div class="bg-emerald-50 border border-emerald-100 rounded-3xl p-6 sm:p-7">
+            <p class="text-slate-400 text-sm">Account Status</p>
+            <h2 class="text-2xl font-semibold text-emerald-600 mt-2">Active</h2>
+        </div>
+
+    </section>
+
+    <!-- BOOKINGS HEADER -->
+    <section>
+        <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-5 mb-8">
+            <div>
+                <p class="uppercase tracking-[4px] text-teal-500 text-xs font-semibold">Appointments</p>
+                <h2 class="heading-font text-2xl sm:text-3xl md:text-4xl mt-2 font-bold text-slate-800">My Sessions</h2>
+            </div>
+
+            <a href="{% url 'catalog' %}"
+               class="bg-teal-500 text-white px-7 py-3 rounded-xl font-semibold hover:bg-teal-600 transition text-center shadow-sm shadow-teal-200">
+                + New Session
+            </a>
+        </div>
+
+        {% if bookings %}
+        <div class="grid lg:grid-cols-2 gap-6 md:gap-7">
+            {% for booking in bookings %}
+            <div class="bg-white border border-teal-100 rounded-3xl overflow-hidden hover:border-teal-300 hover:shadow-lg transition">
+
+                <!-- CARD HEADER -->
+                <div class="bg-teal-50/60 px-6 py-5 flex justify-between items-center gap-3">
+                    <div class="min-w-0">
+                        <p class="text-slate-400 text-xs uppercase tracking-widest">
+                            Session #{{ booking.id }}
+                        </p>
+                        <h3 class="heading-font text-xl sm:text-2xl mt-1 truncate font-bold text-slate-800">
+                            {{ booking.service.name }}
+                        </h3>
+                    </div>
+
+                    {% if booking.status == "Confirmed" %}
+                    <span class="shrink-0 px-4 py-2 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 text-xs font-medium">
+                        Confirmed
+                    </span>
+                    {% elif booking.status == "Cancelled" %}
+                    <span class="shrink-0 px-4 py-2 rounded-full bg-rose-50 text-rose-600 border border-rose-200 text-xs font-medium">
+                        Cancelled
+                    </span>
+                    {% elif booking.status == "Completed" %}
+                    <span class="shrink-0 px-4 py-2 rounded-full bg-blue-50 text-blue-600 border border-blue-200 text-xs font-medium">
+                        Completed
+                    </span>
+                    {% else %}
+                    <span class="shrink-0 px-4 py-2 rounded-full bg-amber-50 text-amber-600 border border-amber-200 text-xs font-medium">
+                        Pending
+                    </span>
+                    {% endif %}
+                </div>
+
+                <!-- BOOKING DETAILS -->
+                <div class="p-6">
+                    <div class="grid sm:grid-cols-2 gap-6">
+
+                        <div>
+                            <p class="text-slate-400 text-sm">Session Date</p>
+                            <p class="font-medium mt-1 text-slate-700">{{ booking.date|date:"F d, Y" }}</p>
+                        </div>
+
+                        <div>
+                            <p class="text-slate-400 text-sm">Session Time</p>
+                            <p class="font-medium mt-1 text-slate-700">{{ booking.time|time:"g:i A" }}</p>
+                        </div>
+
+                        <div>
+                            <p class="text-slate-400 text-sm">Mode</p>
+                            <p class="font-medium mt-1 text-slate-700">{{ booking.get_mode_display }}</p>
+                        </div>
+
+                        <div>
+                            <p class="text-slate-400 text-sm">Price</p>
+                            <p class="font-semibold text-teal-600 mt-1">
+                                {% if booking.price %}₦{{ booking.price }}{% else %}To be confirmed{% endif %}
+                            </p>
+                        </div>
+
+                    </div>
+
+                    {% if booking.notes %}
+                    <div class="border-t border-slate-100 mt-6 pt-5">
+                        <p class="text-slate-400 text-sm">Notes</p>
+                        <p class="text-slate-600 mt-1">{{ booking.notes }}</p>
+                    </div>
+                    {% endif %}
+
+                    <!-- CANCEL ACTION -->
+                    {% if booking.can_cancel %}
+                    <div class="border-t border-slate-100 mt-6 pt-5">
+                        <form method="POST" action="{% url 'cancel_booking' booking.id %}"
+                              onsubmit="return confirm('Cancel this session ({{ booking.service.name }}) on {{ booking.date|date:"F d, Y" }}? This cannot be undone.');">
+                            {% csrf_token %}
+                            <button type="submit"
+                                    class="w-full sm:w-auto bg-rose-50 border border-rose-200 text-rose-600 px-6 py-2.5 rounded-xl font-semibold hover:bg-rose-100 transition">
+                                Cancel Session
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+
+        {% else %}
+        <div class="bg-teal-50/60 border border-teal-100 rounded-3xl p-10 sm:p-12 md:p-20 text-center">
+            <div class="w-16 h-16 mx-auto mb-6">
+                {% include 'partials/service_icon.html' with icon='mindfulness' %}
+            </div>
+            <h3 class="heading-font text-2xl sm:text-3xl md:text-4xl mb-4 font-bold text-slate-800">No Sessions Yet</h3>
+            <p class="text-slate-500 max-w-lg mx-auto mb-8">
+                You haven't booked a session with MindBloom Therapy yet. Whenever you're ready, we're here.
+            </p>
+            <a href="{% url 'catalog' %}"
+               class="inline-block bg-teal-500 text-white px-8 py-4 rounded-2xl font-semibold hover:bg-teal-600 transition shadow-lg shadow-teal-200">
+                Book Your First Session
+            </a>
+        </div>
+        {% endif %}
+
+    </section>
+
+</main>
+
+{% include 'partials/footer.html' %}
+
+</body>
+</html>

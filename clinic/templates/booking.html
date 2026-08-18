@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Session | MindBloom Therapy</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .heading-font { font-family: 'Quicksand', sans-serif; }
+    </style>
+</head>
+
+<body class="bg-gradient-to-b from-teal-50 via-white to-white text-slate-700 min-h-screen">
+
+{% include 'partials/navbar.html' %}
+
+<div class="max-w-3xl mx-auto px-6 py-12 md:py-16">
+
+    <h1 class="heading-font text-4xl sm:text-5xl font-bold text-slate-800 text-center mb-4">
+        Book a Session
+    </h1>
+
+    <p class="text-center text-slate-500 mb-10">
+        You're taking a great step. Let's find a time that works for you.
+    </p>
+
+    {% if errors %}
+    <div class="bg-rose-50 border border-rose-200 text-rose-700 p-4 rounded-xl mb-6">
+        <ul class="list-disc list-inside space-y-1">
+            {% for error in errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <form method="POST" class="bg-white p-6 sm:p-8 rounded-3xl border border-teal-100 shadow-sm">
+        {% csrf_token %}
+
+        <!-- Booking as -->
+        <div class="mb-6">
+            <label class="block mb-2 text-sm font-medium text-slate-600">Booking as</label>
+            <div class="w-full bg-teal-50 rounded-xl px-4 py-3 border border-teal-100 text-slate-600">
+                {{ user.get_full_name|default:user.username }}
+            </div>
+        </div>
+
+        <!-- Service -->
+        <div class="mb-6">
+            <label class="block mb-2 text-sm font-medium text-slate-600">Selected Service</label>
+            <div class="bg-teal-50 rounded-xl px-4 py-3 border border-teal-100 flex items-center justify-between">
+                <span>{{ service.name }}</span>
+                <span class="text-teal-600 font-semibold">₦{{ service.price|floatformat:0 }}</span>
+            </div>
+        </div>
+
+        <!-- Phone -->
+        <div class="mb-6">
+            <label class="block mb-2 text-sm font-medium text-slate-600">Phone Number</label>
+            <input
+                type="tel"
+                name="phone"
+                value="{{ form_data.phone|default:'' }}"
+                placeholder="e.g. 08012345678"
+                required
+                class="w-full bg-white rounded-xl px-4 py-3 border border-slate-200 focus:outline-none focus:border-teal-400">
+        </div>
+
+        <!-- Mode -->
+        <div class="mb-6">
+            <label class="block mb-2 text-sm font-medium text-slate-600">Session Mode</label>
+            <select
+                name="mode"
+                required
+                class="w-full bg-white rounded-xl px-4 py-3 border border-slate-200 focus:outline-none focus:border-teal-400">
+                <option value="" disabled {% if not form_data.mode %}selected{% endif %}>Choose a mode</option>
+                <option value="in_person" {% if form_data.mode == 'in_person' %}selected{% endif %}>In Person</option>
+                <option value="virtual" {% if form_data.mode == 'virtual' %}selected{% endif %}>Virtual (Video Call)</option>
+            </select>
+        </div>
+
+        <!-- Date -->
+        <div class="mb-6">
+            <label class="block mb-2 text-sm font-medium text-slate-600">Session Date</label>
+            <input
+                type="date"
+                name="date"
+                id="appointmentDate"
+                value="{{ form_data.date|default:'' }}"
+                required
+                class="w-full bg-white rounded-xl px-4 py-3 border border-slate-200 focus:outline-none focus:border-teal-400">
+        </div>
+
+        <!-- Time -->
+        <div class="mb-8">
+            <label class="block mb-2 text-sm font-medium text-slate-600">Session Time</label>
+            <input
+                type="time"
+                name="time"
+                value="{{ form_data.time|default:'' }}"
+                min="10:00"
+                max="16:00"
+                required
+                class="w-full bg-white rounded-xl px-4 py-3 border border-slate-200 focus:outline-none focus:border-teal-400">
+        </div>
+
+        
+        <button
+            type="submit"
+            class="w-full bg-teal-500 text-white py-4 rounded-xl font-bold hover:bg-teal-600 transition shadow-lg shadow-teal-200">
+            Confirm Booking
+        </button>
+
+    </form>
+
+</div>
+
+{% include 'partials/footer.html' %}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const dateInput = document.getElementById("appointmentDate");
+    const today = new Date().toISOString().split("T")[0];
+    dateInput.setAttribute("min", today);
+});
+</script>
+
+</body>
+</html>
